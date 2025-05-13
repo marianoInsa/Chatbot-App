@@ -1,23 +1,22 @@
 from langchain_community.vectorstores.utils import filter_complex_metadata
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from load_documents import load_documents
 from load_web_page import load_web_page
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
-def split_documents(docs):
+def split_and_chunk_documents(docs):
     """
     Split documents into smaller chunks for processing.
     """
 
-    splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=50,
-        separators=["\n\n", "\n", " ", ""]
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=200
     )
 
-    chunks = splitter.split_documents(docs)
+    chunks = text_splitter.split_documents(docs)
 
     cleaned_chunks = filter_complex_metadata(chunks)
 
@@ -29,7 +28,7 @@ if __name__ == "__main__":
             os.getenv('URL_2'),
             os.getenv('URL_3'),
             os.getenv('URL_4')])
-    chunks = split_documents(docs)
+    chunks = split_and_chunk_documents(docs)
     for i, chunk in enumerate(chunks):
         print(f"Chunk {i + 1}:")
         print(chunk.page_content)
