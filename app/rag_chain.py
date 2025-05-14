@@ -1,43 +1,48 @@
-from langchain_ollama import OllamaLLM
-from langchain.chains import RetrievalQA
-from langchain.prompts import PromptTemplate
-from vector_db import get_vector_store
-from splitting_chunking import split_and_chunk_documents
-from load_documents import load_documents
-from load_web_page import load_web_page
-import os
+from langchain_ollama import ChatOllama
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_chroma import Chroma
+from embedding import embeddings
 from dotenv import load_dotenv
 load_dotenv()
 
-def get_rag_chain(chunks):
-    """
-    Create a Retrieval-Augmented Generation (RAG) chain
-    """
-    # prompt_template = PromptTemplate(
-    #     template="""
-    #     Your name is Cuervo, you are a helpful assistant. Answer the question based on the context provided.
-    #     """
-    # )
+llm = ChatOllama(
+    model="llama2",
+    temperature=0.3,
+)
 
-    llm = OllamaLLM(model="llama2", temperature=0.1, max_tokens=1500)
-    vector_store = get_vector_store(chunks)
-    retriever = vector_store.as_retriever(search_kwargs={"k": 5})
+prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """
+            You are a helpful assistant named Cuervo. Your sole responsibility is to answer questions strictly and only about the company Promtior. Use exclusively the information provided in the context to generate your responses. Be detailed and informative, including all relevant facts, but also clear and concise—avoid unnecessary elaboration. Do not make assumptions or fabricate information. Simply respond to the question as if you possess direct knowledge about Promtior.
+            
+            Context: {context}
+            """,
+        ),
+        ("human", "{question}"),
+    ]
+)
 
-    rag_chain = RetrievalQA.from_chain_type(
-        llm=llm,
-        retriever=retriever
+chain = prompt | llm
 
-        # chain_type="stuff",
-        # chain_type_kwargs={"prompt": prompt_template}
-    )
-    return rag_chain
+vector_store = Chroma(
+    embedding_function=embeddings,
+    persist_directory="chroma_db",
+)
 
-if __name__ == "__main__":
-    docs = load_documents("data/documento.pdf")
-    docs = load_web_page(os.getenv('URL_1'), os.getenv('URL_2'), os.getenv('URL_3'), os.getenv('URL_4'))
-    chunks = split_and_chunk_documents(docs)
-    rag_chain = get_rag_chain(chunks)
-    query = "What services does Promtior offer?"
-    result = rag_chain.invoke({"query": query})
-    print(result['result'])
-    print("==="*20)
+print("="*20 + " Chatbot Assistance " + "="*20)
+try:
+    while True:
+        question = input("\n\nQuestion (ctrl+c to exit): ")
+        if not question:
+            continue
+        retrieved_docs = vector_store.similarity_search(question, k=5)
+        docs_content = "\n\n".join([doc.page_content for doc in retrieved_docs])
+        prompt = chain.invoke({"question": question, "context": docs_content})
+        answer = prompt.content
+        print(f"\n\nAnswer: {answer}")
+        print("\n\n"+"-"*20)
+except KeyboardInterrupt:
+    print("\nExiting the chatbot. Goodbye!")
+

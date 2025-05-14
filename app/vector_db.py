@@ -7,24 +7,19 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-def get_vector_store(chunks):
-    """
-    Create a vector store from the chunks of text.
-    """
-    vector_store = Chroma(
-        collection_name="Documents",
-        embedding_function=embeddings,
-        persist_directory="db"
-    )
+try:
+    docs = load_documents("data/documento.pdf")
+    docs += load_web_page(os.getenv('URL_1'), os.getenv('URL_2'), os.getenv('URL_3'), os.getenv('URL_4'))
+except Exception as e:
+    print(f"Error loading documents: {e}")
 
-    vector_store.add_documents(documents=chunks)
-    # print(_)
-    return vector_store
+chunks = split_and_chunk_documents(docs)
 
-if __name__ == "__main__":
-    docs = load_web_page(os.getenv('URL_1'), os.getenv('URL_2'), os.getenv('URL_3'), os.getenv('URL_4'))
-    docs += load_documents("data/documento.pdf")
-    chunks = split_and_chunk_documents(docs)
-    vector_store = get_vector_store(chunks)
-    
-    print("Vector store created and persisted.")
+try:
+    vector_store = Chroma.from_documents(
+        documents=chunks,
+        embedding=embeddings,
+        persist_directory="chroma_db"
+        )
+except Exception as e:
+    print(f"Error creating vector store: {e}")
