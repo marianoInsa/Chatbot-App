@@ -34,10 +34,7 @@ def get_rag_chain(chunks):
 
 if __name__ == "__main__":
     docs = load_documents("data/documento.pdf")
-    docs = load_web_page([os.getenv('URL_1'),
-            os.getenv('URL_2'),
-            os.getenv('URL_3'),
-            os.getenv('URL_4')])
+    docs = load_web_page(os.getenv('URL_1'), os.getenv('URL_2'), os.getenv('URL_3'), os.getenv('URL_4'))
     chunks = split_and_chunk_documents(docs)
     rag_chain = get_rag_chain(chunks)
     query = "What services does Promtior offer?"
