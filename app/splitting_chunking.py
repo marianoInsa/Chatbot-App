@@ -15,6 +15,19 @@ def split_and_chunk_documents(docs):
         chunk_size=1000,
         chunk_overlap=200,
         add_start_index=True,
+        separators=[
+            "\n\n",
+            "\n",
+            " ",
+            ".",
+            ",",
+            "\u200b",  # Zero-width space
+            "\uff0c",  # Fullwidth comma
+            "\u3001",  # Ideographic comma
+            "\uff0e",  # Fullwidth full stop
+            "\u3002",  # Ideographic full stop
+            "",
+        ],
     )
 
     chunks = text_splitter.split_documents(docs)

@@ -8,4 +8,4 @@ data/
 __pycache__/
 *.pyc
 
-db/
+chroma_db/
