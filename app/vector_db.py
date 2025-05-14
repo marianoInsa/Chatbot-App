@@ -18,15 +18,13 @@ def get_vector_store(chunks):
     )
 
     vector_store.add_documents(documents=chunks)
-
+    # print(_)
     return vector_store
 
 if __name__ == "__main__":
-    docs = load_documents("data/documento.pdf")
-    docs += load_web_page([os.getenv('URL_1'),
-            os.getenv('URL_2'),
-            os.getenv('URL_3'),
-            os.getenv('URL_4')])
+    docs = load_web_page(os.getenv('URL_1'), os.getenv('URL_2'), os.getenv('URL_3'), os.getenv('URL_4'))
+    docs += load_documents("data/documento.pdf")
     chunks = split_and_chunk_documents(docs)
     vector_store = get_vector_store(chunks)
+    
     print("Vector store created and persisted.")

@@ -12,19 +12,20 @@ def load_documents(pdf_path):
   with pdfplumber.open(pdf_path) as pdf:
       pages = pdf.pages
       for i, page in enumerate(pages):
+          text = f"Pagina {i + 1}:\n"
           text = page.extract_text()
           text = text.strip()
 
-          links = []
-          if page.annots:
-             for annot in page.annots:
-                uri = annot.get('uri')
-                if uri:
-                    links.append(uri)
+          # links = []
+          # if page.annots:
+          #    for annot in page.annots:
+          #       uri = annot.get('uri')
+          #       if uri:
+          #           links.append(uri)
           
-          if links:
-             text += "\n Links en la página: \n"
-             text += "\n".join(links)
+          # if links:
+          #    text += "\n Links en la página: \n"
+          #    text += "\n".join(links)
 
           # print(f"Page {i + 1}:\n{text}\n")
 
@@ -32,8 +33,8 @@ def load_documents(pdf_path):
              Document(
                 page_content=text,
                 metadata={
-                    "page": i + 1,
-                    "links": links
+                    "page": i + 1
+                    # "links": links
                 }
              )
           )

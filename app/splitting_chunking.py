@@ -13,7 +13,8 @@ def split_and_chunk_documents(docs):
 
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,
-        chunk_overlap=200
+        chunk_overlap=200,
+        add_start_index=True,
     )
 
     chunks = text_splitter.split_documents(docs)
@@ -23,11 +24,8 @@ def split_and_chunk_documents(docs):
     return cleaned_chunks
 
 if __name__ == "__main__":
-    docs = load_documents("data/documento.pdf")
-    docs += load_web_page([os.getenv('URL_1'),
-            os.getenv('URL_2'),
-            os.getenv('URL_3'),
-            os.getenv('URL_4')])
+    docs = load_web_page(os.getenv('URL_1'), os.getenv('URL_2'), os.getenv('URL_3'), os.getenv('URL_4'))
+    docs += load_documents("data/documento.pdf")
     chunks = split_and_chunk_documents(docs)
     for i, chunk in enumerate(chunks):
         print(f"Chunk {i + 1}:")
