@@ -3,50 +3,40 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 USER_AGENT = os.getenv("USER_AGENT")
-import bs4
+from bs4 import SoupStrainer
 from langchain_community.document_loaders import WebBaseLoader
-# from bs4 import BeautifulSoup
-# from langchain_core.documents import Document
-# from playwright.sync_api import sync_playwright
+from langchain_core.documents import Document
+import re
 
 def load_web_page(url1, url2, url3, url4):
     """
     Load a web page and extract its content.
     """
-    # docs = []
-    # for url in urls:
-    #     with sync_playwright() as p:
-    #         browser = p.chromium.launch(headless=True)
-    #         page = browser.new_page()
-    #         page.goto(url)
-    #         html = page.content()
-    #         browser.close()
-
-    #         soup = BeautifulSoup(html, 'lxml')
-    #         # print(soup.title.string)
+    docs = []
+    for url in (url1, url2, url3, url4):
+        # print(f"\n\nLoading URL: {url}")
+        strainer = SoupStrainer(class_=("wixui-rich-text__text"))
+        loader = WebBaseLoader(
+            web_paths=(url,),
+            bs_kwargs={"parse_only": strainer},
+            header_template={"User-Agent": USER_AGENT},
+        )
+        raw_docs = loader.load()
+        # print(f"\n Raw docs: \n\n {raw_docs} \n\n" + "="*20)
+        for doc in raw_docs:
+            cleaned_text = doc.page_content
             
-    #         elements = soup.find_all(class_="wixui-rich-text__text")
-    #         element_text = ""
-    #         for element in elements:
-    #             if element.name == 'h1':
-    #                 element_text += "\n" + element.get_text()
-    #         docs.append(
-    #             Document(
-    #                 page_content=element_text,
-    #                 metadata={
-    #                     "url": url,
-    #                     "title": soup.title.string
-    #                 }
-    #             )
-    #         )
+            cleaned_text = cleaned_text.replace(".",". ").replace(",",", ").replace("  ", " ").replace("\xa0", " ").replace("\u200b", " ").strip()
 
-    bs4_strainer = bs4.SoupStrainer(class_=("wixui-rich-text__text"))
-    loader = WebBaseLoader(
-        web_paths=(url1, url2, url3, url4,),
-        bs_kwargs={"parse_only": bs4_strainer},
-        header_template={"User-Agent": USER_AGENT},
-    )
-    docs = loader.load()
+            cleaned_text = re.sub(r"([a-z])([A-Z])", r"\1 \2", cleaned_text)
+
+            docs.append(
+                Document(
+                    page_content=cleaned_text,
+                    metadata=doc.metadata
+                )
+            )
+
     return docs
 
 if __name__ == "__main__":
@@ -57,8 +47,10 @@ if __name__ == "__main__":
     #     os.getenv('URL_4')
     # )
     docs = load_web_page(os.getenv('URL_1'), os.getenv('URL_2'), os.getenv('URL_3'), os.getenv('URL_4'))
-    print(docs[0].page_content)
-    # for doc in docs:
-    #     print(f"\n>> URL: {doc.metadata['url']}")
-    #     print(doc.page_content)
-    #     print("==="*20)
+    #print(docs[0].page_content)
+    print(f"\n Docs: \n\n {docs} \n\n" + "="*20)
+    for doc in docs:
+        print(f"\n>> Metadata: {doc.metadata}")
+        print("\n\nContenido:\n")
+        print(doc.page_content)
+        print("==="*20)
