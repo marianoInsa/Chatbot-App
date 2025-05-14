@@ -1,12 +1,13 @@
 # import requests
+from dotenv import load_dotenv
+import os
+load_dotenv()
+USER_AGENT = os.getenv("USER_AGENT")
 import bs4
 from langchain_community.document_loaders import WebBaseLoader
 # from bs4 import BeautifulSoup
 # from langchain_core.documents import Document
 # from playwright.sync_api import sync_playwright
-from dotenv import load_dotenv
-import os
-load_dotenv()
 
 def load_web_page(url1, url2, url3, url4):
     """
@@ -43,6 +44,7 @@ def load_web_page(url1, url2, url3, url4):
     loader = WebBaseLoader(
         web_paths=(url1, url2, url3, url4,),
         bs_kwargs={"parse_only": bs4_strainer},
+        header_template={"User-Agent": USER_AGENT},
     )
     docs = loader.load()
     return docs
