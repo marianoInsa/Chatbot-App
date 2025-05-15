@@ -1,44 +1,54 @@
-import pdfplumber
-import logging
-logging.getLogger("pdfminer").setLevel(logging.ERROR)
+# import pdfplumber
+# import logging
+# logging.getLogger("pdfminer").setLevel(logging.ERROR)
 from langchain_core.documents import Document
 # from collections import defaultdict
 
-def load_documents(pdf_path):
+def load_documents(txt_path):
   """
   Load documents from a PDF file and extract text.
   """
-  docs = []
-  with pdfplumber.open(pdf_path) as pdf:
-      pages = pdf.pages
-      for i, page in enumerate(pages):
-          text = f"Pagina {i + 1}:\n"
-          text = page.extract_text()
-          text = text.strip()
+  with open(txt_path, "r", encoding="utf-8") as f:
+    text = f.read().strip()
 
-          # links = []
-          # if page.annots:
-          #    for annot in page.annots:
-          #       uri = annot.get('uri')
-          #       if uri:
-          #           links.append(uri)
+  doc = Document(
+      page_content=text,
+      metadata={"source": txt_path}
+  )
+
+  return [doc]
+
+  # docs = []
+  # with pdfplumber.open(pdf_path) as pdf:
+  #     pages = pdf.pages
+  #     for i, page in enumerate(pages):
+  #         text = f"Pagina {i + 1}:\n"
+  #         text = page.extract_text()
+  #         text = text.strip()
+
+  #         # links = []
+  #         # if page.annots:
+  #         #    for annot in page.annots:
+  #         #       uri = annot.get('uri')
+  #         #       if uri:
+  #         #           links.append(uri)
           
-          # if links:
-          #    text += "\n Links en la página: \n"
-          #    text += "\n".join(links)
+  #         # if links:
+  #         #    text += "\n Links en la página: \n"
+  #         #    text += "\n".join(links)
 
-          # print(f"Page {i + 1}:\n{text}\n")
+  #         # print(f"Page {i + 1}:\n{text}\n")
 
-          docs.append(
-             Document(
-                page_content=text,
-                metadata={
-                    "page": i + 1
-                    # "links": links
-                }
-             )
-          )
-      return docs
+  #         docs.append(
+  #            Document(
+  #               page_content=text,
+  #               metadata={
+  #                   "page": i + 1
+  #                   # "links": links
+  #               }
+  #            )
+  #         )
+
 
 
       #     words = page.extract_words()
@@ -135,9 +145,9 @@ def load_documents(pdf_path):
 
 if __name__ == "__main__":
 
-  pdf_path = "data/documento.pdf"
-  doc = load_documents(pdf_path)
+  txt_path = "data/documento.txt"
+  doc = load_documents(txt_path)
+  print(doc)
   for d in doc:
-      print(f'\n>> Page {d.metadata["page"]}:')
       print(d.page_content)
-      print("===" * 20)
+      print(d.metadata)
