@@ -1,7 +1,7 @@
 from langchain_community.vectorstores.utils import filter_complex_metadata
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from load_documents import load_documents
-from load_web_page import load_web_page
+from app.load_documents import load_documents
+from app.load_web_page import load_web_page
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -38,7 +38,7 @@ def split_and_chunk_documents(docs):
 
 if __name__ == "__main__":
     docs = load_web_page(os.getenv('URL_1'), os.getenv('URL_2'), os.getenv('URL_3'), os.getenv('URL_4'))
-    docs += load_documents("data/documento.pdf")
+    docs += load_documents("data/documento.txt")
     chunks = split_and_chunk_documents(docs)
     for i, chunk in enumerate(chunks):
         print(f"Chunk {i + 1}:")
