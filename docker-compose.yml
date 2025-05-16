@@ -1,0 +1,12 @@
+services:
+  fastapi:
+    image: image-fastapi
+    build: .
+    container_name: fastapi-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app
+      - ./secrets:/app/secrets
+    env_file:
+      - .env

@@ -1,0 +1,8 @@
+env-chatbot/
+.vscode/
+
+__pycache__/
+*.pyc
+
+*.json
+!secrets/credentials.json
