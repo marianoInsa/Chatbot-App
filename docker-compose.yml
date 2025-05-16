@@ -1,0 +1,31 @@
+services:
+  ollama:
+    build:
+      context: .
+      dockerfile: Dockerfile.ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: always
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cuervo-api
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+    restart: on-failure
+    depends_on:
+      - ollama
+    volumes:
+      - ./data:/app/data
+      - ./static:/app/static
+      - ./app:/app/app
+      - ./chroma_db:/app/chroma_db
+
+volumes:
+  ollama_data:

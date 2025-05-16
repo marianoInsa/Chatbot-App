@@ -19,7 +19,7 @@ def create_vector_store():
         print(f"Error loading documents: {e}")
 
     chunks = split_and_chunk_documents(docs)
-
+    vector_store = None
     try:
         vector_store = Chroma.from_documents(
             documents=chunks,

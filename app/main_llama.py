@@ -2,26 +2,19 @@ from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-# from langchain_ollama import ChatOllama
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_chroma import Chroma
 from app.embedding import embeddings
 from app.vector_db import create_vector_store
-# from google import genai
-import getpass
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
-# client = genai.Client(api_key='GEMINI_API_KEY')
-# genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-# if not os.environ.get("GEMINI_API_KEY"):
-#   os.environ["GEMINI_API_KEY"] = getpass.getpass("Enter API key for Google Gemini: ")
-
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.0-flash",
-    temperature=0.3
+llm = ChatOllama(
+    model="llama2",
+    temperature=0.3,
+    base_url=os.getenv("OLLAMA_BASE_URL", "http://ollama:11434")
 )
 
 prompt = ChatPromptTemplate.from_messages(
