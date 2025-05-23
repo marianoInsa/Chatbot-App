@@ -31,8 +31,11 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/app/secrets/credentials.json"
 # if not os.environ.get("GEMINI_API_KEY"):
 #   os.environ["GEMINI_API_KEY"] = getpass.getpass("Enter API key for Google Gemini: ")
 
-if not os.environ.get("GEMINI_API_KEY"):
-  os.environ["GEMINI_API_KEY"] = getpass.getpass("Enter API key for Google Gemini: ")
+# if not os.environ.get("GEMINI_API_KEY"):
+#   os.environ["GEMINI_API_KEY"] = getpass.getpass("Enter API key for Google Gemini: ")
+gemini_key = os.getenv("GEMINI_API_KEY")
+if not gemini_key:
+    raise RuntimeError("GEMINI_API_KEY no está definido en las variables de entorno")
 
 from langchain.chat_models import init_chat_model
 
