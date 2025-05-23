@@ -30,12 +30,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Prepare artifact (exclude venv, .git, __pycache__)
+      - name: Prepare artifact (exclude .venv, __pycache__)
         run: |
           mkdir deploy
-          cp -r app.py requirements.txt ./*.py deploy/
-          cp -r static deploy/ || true
-          cp -r templates deploy/ || true
+          cp -r app data static requirements.txt Dockerfile .dockerignore .env docker-compose deploy/
           cd deploy
           zip -r ../release.zip ./*
           cd ..
