@@ -33,7 +33,7 @@ jobs:
       - name: Prepare artifact (exclude .venv, __pycache__)
         run: |
           mkdir deploy
-          cp -r app data static requirements.txt Dockerfile .dockerignore .env docker-compose deploy/
+          cp -r app data static requirements.txt Dockerfile .dockerignore docker-compose.yml deploy/
           cd deploy
           zip -r ../release.zip ./*
           cd ..
