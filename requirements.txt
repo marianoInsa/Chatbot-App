@@ -5,8 +5,13 @@ python-dotenv
 beautifulsoup4
 langchain-huggingface
 langchain-core
+langgraph 
 langchain-community
 langchain-google-genai
 langchain-chroma
 langchain-text-splitters
+langchain[google-genai]
+langchain_google_genai
+google-ai-generativelanguage
+google-generativeai
 hf_xet

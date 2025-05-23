@@ -1,5 +1,5 @@
 env-chatbot/
-env/
+.venv/
 .vscode/
 .env
 
