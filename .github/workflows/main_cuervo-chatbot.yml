@@ -30,7 +30,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: index.docker.io/${{ secrets.DOCKERHUB_USERNAME }}/marianoinsa/chatbot-app-repo:${{ github.sha }}
+        tags: index.docker.io/${{ secrets.DOCKERHUB_USERNAME }}/chatbot-app-repo:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
