@@ -10,11 +10,8 @@ COPY requirements.txt .
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
-COPY app/ ./app/
-COPY data/ ./data/
-COPY static/ ./static/
-COPY secrets/ ./secrets/
+COPY . .
 
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["gunicorn", "app.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]
