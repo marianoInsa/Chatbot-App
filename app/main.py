@@ -24,7 +24,7 @@ load_dotenv()
 
 os.environ.get("LANGSMITH_TRACING")
 os.environ.get("LANGSMITH_API_KEY")
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/run/secrets/credentials.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/app/secrets/credentials.json"
 
 # client = genai.Client(api_key='GEMINI_API_KEY')
 # genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
