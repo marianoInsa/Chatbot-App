@@ -48,4 +48,4 @@ jobs:
         app-name: 'cuervo-chatbot'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_981a76b3f51f43eca1d7ef4cc5c617a8 }}
-        images: 'index.docker.io/${{ secrets.DOCKERHUB_USERNAME }}/marianoinsa/chatbot-app-repo:${{ github.sha }}'
+        images: 'index.docker.io/${{ secrets.DOCKERHUB_USERNAME }}/chatbot-app-repo:${{ github.sha }}'
