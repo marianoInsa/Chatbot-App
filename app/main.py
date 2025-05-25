@@ -24,7 +24,7 @@ load_dotenv()
 
 os.environ.get("LANGSMITH_TRACING")
 os.environ.get("LANGSMITH_API_KEY")
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/app/secrets/credentials.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "secrets/credentials.json"
 
 # client = genai.Client(api_key='GEMINI_API_KEY')
 # genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -37,14 +37,15 @@ gemini_key = os.getenv("GEMINI_API_KEY")
 if not gemini_key:
     raise RuntimeError("GEMINI_API_KEY no está definido en las variables de entorno")
 
-from langchain.chat_models import init_chat_model
+# from langchain.chat_models import init_chat_model
 
-llm = init_chat_model("gemini-2.0-flash", model_provider="google_genai")
+# llm = init_chat_model("gemini-2.0-flash-001", model_provider="google_genai")
 
-# llm = ChatGoogleGenerativeAI(
-#     model="gemini-2.0-flash",
-#     temperature=0.3
-# )
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.0-flash-001",
+    temperature=0.3,
+    google_api_key=gemini_key
+)
 
 # Definicion del prompt para responder preguntas
 prompt = hub.pull("rlm/rag-prompt")
