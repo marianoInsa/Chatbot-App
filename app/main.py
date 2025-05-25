@@ -143,6 +143,10 @@ app.mount(
 class QuestionRequest(BaseModel):
     question: str
 
+@app.get("/")
+def health_check():
+    return {"status": "ok"}
+
 @app.post("/ask")
 def ask_question(request: QuestionRequest):
     """
